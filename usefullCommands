@@ -1,0 +1,5 @@
+rails routes | grep articles
+rails routes | grep -v rails
+rails routes -g articles
+
+rails g serializer article title content slug
