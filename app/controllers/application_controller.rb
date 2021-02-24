@@ -5,5 +5,5 @@ class ApplicationController < ActionController::API
     'ActiveRecord::RecordNotFound' =>
       'JsonapiErrorsHandler::Errors::NotFound'
   )
-  rescue_from ::StandardError, with: lambda { |error| handle_error(error) }
+  rescue_from ::StandardError, with: ->(error) { handle_error(error) }
 end
