@@ -6,3 +6,5 @@ rails g serializer article title content slug
 
 GITHUB_LOGIN='' GITHUB_PASSWORD='' rails c
 client = Octokit::Client.new(login: ENV['GITHUB_LOGIN'], password: ENV['GITHUB_PASSWORD'])
+
+rails g model access_token token user:references
