@@ -69,7 +69,82 @@ describe ArticlesController do
       it_behaves_like 'forbidden_requests'
     end
 
-    context 'when invalid parameters provided' do
+    context 'when authorized' do # rubocop:disable Metrics/BlockLength
+      let(:access_token) { create :access_token }
+      before { request.headers['authorization'] = "Bearer #{access_token.token}" }
+
+      context 'when invalid parameters provided' do # rubocop:disable Metrics/BlockLength
+        let(:invalid_attributes) do
+          {
+            data: {
+              attributes: {
+                title: '',
+                content: ''
+              }
+            }
+          }
+        end
+
+        subject { post :create, params: invalid_attributes }
+
+        it 'should return 422 status code' do
+          subject
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'should return proper error json' do
+          subject
+          expect(json['errors']).to include(
+            {
+              'source' => { 'pointer' => '/data/attributes/title' },
+              'detail' => 'can\'t be blank'
+            },
+            {
+              'source' => { 'pointer' => '/data/attributes/content' },
+              'detail' => 'can\'t be blank'
+            },
+            {
+              'source' => { 'pointer' => '/data/attributes/slug' },
+              'detail' => 'can\'t be blank'
+            }
+          )
+        end
+      end
+
+      context 'when success request sent' do
+        let(:access_token) { create :access_token }
+        before { request.headers['authorization'] = "Bearer #{access_token.token}" }
+
+        let(:valid_attributes) do
+          {
+            'data' => {
+              'attributes' => {
+                'title' => 'Awesome article',
+                'content' => 'Super content',
+                'slug' => 'awesome-article'
+              }
+            }
+          }
+        end
+
+        subject { post :create, params: valid_attributes }
+
+        it 'should have 201 status code' do
+          subject
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'should have proper json body' do
+          subject
+          expect(json_data['attributes']).to include(
+            valid_attributes['data']['attributes']
+          )
+        end
+
+        it 'should create the article' do
+          expect { subject }.to change { Article.count }.by(1)
+        end
+      end
     end
   end
 end
