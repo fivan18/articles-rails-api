@@ -9,11 +9,11 @@ RSpec.describe Comment, type: :model do
     it 'should test presence of attributes' do
       comment = Comment.new
       expect(comment).not_to be_valid
-      expect(comment.errors.messages).to include({
-                                                   user: ['must exist'],
-                                                   article: ['must exist'],
-                                                   content: ['can\'t be blank']
-                                                 })
+      expect(comment.errors.messages.to_h).to include({
+                                                        user: ['must exist'],
+                                                        article: ['must exist'],
+                                                        content: ['can\'t be blank']
+                                                      })
     end
   end
 end
