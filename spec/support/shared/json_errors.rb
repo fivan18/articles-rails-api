@@ -24,10 +24,10 @@ end
 shared_examples_for 'forbidden_requests' do
   let(:authorization_error) do
     {
-      'status' => '403',
-      'source' => { 'pointer' => '/headers/authorization' },
-      'title' => 'Not authorized',
-      'detail' => 'You have no right to access this resource.'
+      status: '403',
+      source: { pointer: '/headers/authorization' },
+      title: 'Not authorized',
+      detail: 'You have no right to access this resource.'
     }
   end
 
@@ -38,6 +38,6 @@ shared_examples_for 'forbidden_requests' do
 
   it 'should return proper error json' do
     subject
-    expect(json['errors']).to include(authorization_error)
+    expect(json[:errors]).to include(authorization_error)
   end
 end
