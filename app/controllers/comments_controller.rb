@@ -1,12 +1,11 @@
 class CommentsController < ApplicationController
+  include Paginable
   skip_before_action :authorize!, only: [:index]
   before_action :load_article
 
   def index
-    comments = @article.comments
-      .page(params[:page])
-      .per(params[:per_page])
-    render json: comments
+    paginated = paginate(@article.comments)
+    render_collection(paginated)
   end
 
   def create
@@ -15,11 +14,13 @@ class CommentsController < ApplicationController
     )
 
     @comment.save!
-    render json: @comment, status: :created, location: @article
-  rescue Error
-    render json: @comment, adapter: :json_api,
-           serializer: ErrorSerializer,
-           status: :unprocessable_entity
+    render json: serializer.new(@comment), status: :created, location: @article
+  rescue ActiveRecord::RecordInvalid
+    render json: { errors: @comment.errors }, status: :unprocessable_entity
+  end
+
+  def serializer
+    CommentSerializer
   end
 
   private
