@@ -15,30 +15,26 @@ class ArticlesController < ApplicationController
   def create
     article = current_user.articles.build(article_params)
     article.save!
-    render json: article, status: :created
-  rescue Error
-    render json: article, adapter: :json_api,
-           serializer: ErrorSerializer,
-           status: :unprocessable_entity
+    render json: serializer.new(article), status: :created
+  rescue ActiveRecord::RecordInvalid
+    render json: { errors: article.errors }, status: :unprocessable_entity
   end
 
   def update
     article = current_user.articles.find(params[:id])
     article.update!(article_params)
-    render json: article, status: :ok
+    render json: serializer.new(article), status: :ok
   rescue ActiveRecord::RecordNotFound
     authorization_error
-  rescue Error
-    render json: article, adapter: :json_api,
-           serializer: ErrorSerializer,
-           status: :unprocessable_entity
+  rescue ActiveRecord::RecordInvalid
+    render json: { errors: article.errors }, status: :unprocessable_entity
   end
 
   def destroy
     article = current_user.articles.find(params[:id])
     article.destroy
     head :no_content
-  rescue Error
+  rescue StandardError
     authorization_error
   end
 

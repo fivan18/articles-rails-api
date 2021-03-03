@@ -3,10 +3,10 @@ require 'rails_helper'
 shared_examples_for 'unauthorized_requests' do
   let(:authentication_error) do
     {
-      'status' => '401',
-      'source' => { 'pointer' => '/code' },
-      'title' => 'Authentication code is invalid',
-      'detail' => 'You must provide valid code in order to exchange it for token.'
+      status: '401',
+      source: { pointer: '/code' },
+      title: 'Authentication code is invalid',
+      detail: 'You must provide valid code in order to exchange it for token.'
     }
   end
 
@@ -17,7 +17,7 @@ shared_examples_for 'unauthorized_requests' do
 
   it 'should return proper error body' do
     subject
-    expect(json['errors']).to include(authentication_error)
+    expect(json[:errors]).to include(authentication_error)
   end
 end
 
