@@ -41,7 +41,7 @@ Install the dependencies
 
 ### Usage
 
-You can fetch articles the with the next URL: [http://localhost:3000/articles](http://localhost:3000/articles).
+You can fetch the articles with the next URL: [http://localhost:3000/articles](http://localhost:3000/articles).
 
 ### Run tests
 
